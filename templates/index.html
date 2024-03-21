@@ -98,6 +98,19 @@
       .form-switcher button:hover {
         background-color: #0056b3;
       }
+      .error-container {
+        background-color: #fcd3d3;
+        border: 1px solid #882323;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 20px;
+      }
+
+      .error {
+        color: #c03232;
+        font-size: 18px;
+        margin-top: 10px;
+      }
     </style>
   </head>
   <body>
@@ -108,6 +121,11 @@
         <button onclick="toggleForms('login')">Login</button>
         <button onclick="toggleForms('admin')">Admin</button>
       </div>
+      {% if error_message %}
+      <div class="error-container">
+        <p class="error">{{ error_message }}</p>
+      </div>
+      {% endif %}
       <div class="form-container" id="register-form">
         <form
           method="post"
@@ -161,6 +179,7 @@
           <label for="username">Username:</label>
           <input
             autocomplete="off"
+            autofocus
             type="text"
             id="username"
             name="name"
@@ -182,6 +201,7 @@
           <p>Admin Login</p>
           <label for="adminname">Admin Name:</label>
           <input
+            autofocus
             autocomplete="off"
             type="text"
             id="adminname"
@@ -203,11 +223,15 @@
 
     <script>
       function toggleForms(formToShow) {
-        document.querySelectorAll(".form-container").forEach(function (form) {
-          form.style.display = "none";
-        });
-
+        var forms = document.querySelectorAll(".form-container");
+        for (var i = 0; i < forms.length; i++) {
+          forms[i].style.display = "none";
+        }
         document.getElementById(formToShow + "-form").style.display = "block";
+        document
+          .getElementById(formToShow + "-form")
+          .querySelector("input")
+          .focus();
       }
 
       function validateRegistrationForm() {

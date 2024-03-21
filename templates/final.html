@@ -69,7 +69,9 @@
     <div class="container">
       <a href="/spam" class="button"><i class="fas fa-arrow-left"></i> Back</a>
       <div class="content">
-        <h1>Highest Algorithm Accuracy is 94%</h1>
+        {% if accuracy %}
+          <h1>Highest Accuracy is {{ accuracy }}%</h1>
+        {% endif %}
         <div class="info-box">
           <h2><i class="fas fa-info-circle info-icon"></i> {{ result }}</h2>
         </div>
