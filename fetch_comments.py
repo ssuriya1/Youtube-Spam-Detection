@@ -1,30 +1,41 @@
-import requests
-from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
 
-def get_video_comments(video_url, max_comments=5):
+def get_video_comments(video_url):
+    driver = None
     try:
-        response = requests.get(video_url)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            comment_divs = soup.find_all('yt-formatted-string', class_='style-scope ytd-comment-renderer')
-            comments = [comment.text.strip() for comment in comment_divs]
-            print(comments)
-            return response.text
-            # return comments[:max_comments]
-        else:
-            print("Failed to fetch HTML content.")
-            return []
+        # Initialize the WebDriver
+        driver = webdriver.Chrome()
+        driver.get(video_url)
+        time.sleep(5)
+        
+        # Scroll down to load comments
+        body = driver.find_element(By.TAG_NAME, 'body')
+        for _ in range(10):  # Increase the number of scrolls to ensure more comments load
+            body.send_keys(Keys.PAGE_DOWN)
+            time.sleep(1)
+        
+        # Wait for comments to load
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#content-text')))
+        
+        # Extract comments
+        comments = []
+        comment_divs = driver.find_elements(By.CSS_SELECTOR, '#content-text')
+        for comment_div in comment_divs:
+            comments.append(comment_div.text)
+        
+        # Get total comments count
+        total_comments = len(comments)        
+        return comments, total_comments
+        
     except Exception as e:
         print(f"Error fetching comments: {e}")
-        return []
-
-# video_url = 'https://realpython.com/python-web-scraping-practical-introduction/'
-video_url = 'https://www.youtube.com/watch?v=Keck4iVUUdE'
-comments = get_video_comments(video_url)
-if comments:
-    # Write HTML content to a file
-    with open('youtube_video_page.html', 'w', encoding='utf-8') as f:
-        f.write(comments)
-    print("HTML content saved to 'youtube_video_page.html' file.")
-# for i, comment in enumerate(comments, start=1):
-#     print(f"Comment {i}: {comment}")
+        return [], 0
+    finally:
+        # Quit the WebDriver after use
+        if driver:
+            driver.quit()

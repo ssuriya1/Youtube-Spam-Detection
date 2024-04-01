@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import sqlite3
 from joblib import load
+from fetch_comments import get_video_comments
 
 app = Flask(__name__)
 database = "database.db"
@@ -81,31 +82,41 @@ def login():
 @app.route("/spam", methods=["GET","POST"])
 def spam():
     if request.method == "POST":
-        comment = request.form["comment"]
-        loaded_model, loaded_vect = load('best_model.pkl')
-        new_comment = [comment]
-        new_comment_transformed = loaded_vect.transform(new_comment).toarray()
-        prediction = loaded_model.predict(new_comment_transformed)[0]
-        accuracy = loaded_model.predict_proba(new_comment_transformed)[0][1] * 100  # Convert accuracy to percentage
-        if prediction == 1:
-            prediction = "spam"
-            conn = sqlite3.connect(database)
-            cur = conn.cursor()
-            cur.execute("insert into result (user_name,comment,result)values(?,?,?)", (name1[-1], comment, prediction))
-            conn.commit()
-            return render_template("final.html", result="The comment is spam", accuracy=accuracy)
+        youtube_url = request.form["youtube_url"]
+        if youtube_url:
+            comments, total_comments = get_video_comments(youtube_url)
+            if comments:
+                # Load spam detection model
+                loaded_model, loaded_vect = load('best_model.pkl')
+                spam_results = []
+                for comment in comments:
+                    # Transform comment and predict spam
+                    new_comment = [comment]
+                    new_comment_transformed = loaded_vect.transform(new_comment).toarray()
+                    prediction = loaded_model.predict(new_comment_transformed)[0]
+                    accuracy = loaded_model.predict_proba(new_comment_transformed)[0][1] * 100  # Convert accuracy to percentage
+                    if prediction == 1:
+                        spam_results.append(("Spam", accuracy, comment))  # Reordered the tuple
+                    else:
+                        spam_results.append(("Not Spam", accuracy, comment))  # Reordered the tuple
+                
+                # Process comments for spam detection or any other task
+                return render_template("final.html", comments=spam_results, total_comments=total_comments)
+            else:
+                return render_template("final.html", result="No comments available on the YouTube video")
         else:
-            return render_template("final.html", result="The comment is not spam")
-    return render_template("spam.html")
+            return render_template("final.html", result="Please provide a valid YouTube URL")
+    
+    return render_template("final.html")
 
 @app.route("/admin", methods=["GET","POST"])
 def admin():
     if request.method == "POST":
-        a = "admin"
-        b = "admin"
+        admin_username = "admin"
+        admin_password = "admin"
         user = request.form["name"]
         password = request.form["pass"]
-        if user == a and password == b:
+        if user == admin_username and password == admin_password:
             conn = sqlite3.connect(database)
             cur = conn.cursor()
             cur.execute("select * from result")

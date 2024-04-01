@@ -8,73 +8,40 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-image: url("static/index.jpg");
-        background-size: cover;
-        background-position: center;
-        margin: 0;
-        padding: 0;
-      }
-
-      .container {
-        max-width: 800px;
-        margin: 50px auto;
-        padding: 20px;
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      }
-
-      .button {
-        padding: 10px 20px;
-        border: none;
-        color: #fff;
-        background-color: #007bff;
-        border-radius: 5px;
-        cursor: pointer;
-        text-decoration: none;
-        transition: background-color 0.3s ease;
-      }
-
-      .button:hover {
-        background-color: #0056b3;
-      }
-
-      .content {
-        text-align: center;
-        margin-top: 20px;
-      }
-
-      .info-box {
-        padding: 20px;
-        background-color: #f0f0f0;
-        border-radius: 10px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-      }
-
-      .info-icon {
-        margin-right: 10px;
-        color: #007bff;
-      }
-
-      h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
-      }
-    </style>
+    <link rel="stylesheet" href="../static/final.css">
   </head>
   <body>
     <div class="container">
       <a href="/spam" class="button"><i class="fas fa-arrow-left"></i> Back</a>
       <div class="content">
-        {% if accuracy %}
-          <h1>Highest Accuracy is {{ accuracy }}%</h1>
+        {% if comments %}
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Comment</th>
+              <th>Prediction</th>
+              <th>Accuracy</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for prediction, accuracy, comment in comments %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ comment }}</td>
+              <td
+                class="{% if prediction == 'Spam' %}spam{% else %}not-spam{% endif %}"
+              >
+                {{ prediction }}
+              </td>
+              <td>{% if prediction == 'Spam' %}{{ accuracy }}%{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p>No comments available.</p>
         {% endif %}
-        <div class="info-box">
-          <h2><i class="fas fa-info-circle info-icon"></i> {{ result }}</h2>
-        </div>
       </div>
     </div>
   </body>
