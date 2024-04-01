@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 
-# Function to fetch comments of a YouTube video
 def get_video_comments(video_url, max_comments=5):
     try:
         response = requests.get(video_url)
@@ -19,8 +18,8 @@ def get_video_comments(video_url, max_comments=5):
         print(f"Error fetching comments: {e}")
         return []
 
-# Example usage
-video_url = 'https://realpython.com/python-web-scraping-practical-introduction/'
+# video_url = 'https://realpython.com/python-web-scraping-practical-introduction/'
+video_url = 'https://www.youtube.com/watch?v=Keck4iVUUdE'
 comments = get_video_comments(video_url)
 if comments:
     # Write HTML content to a file

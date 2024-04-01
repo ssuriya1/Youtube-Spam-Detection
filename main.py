@@ -3,8 +3,7 @@ import sqlite3
 from joblib import load
 
 app = Flask(__name__)
-app.secret_key = "ygfdffsfi99"
-database = "data1.db"
+database = "database.db"
 
 # Create tables if they don't exist
 def create_tables():
