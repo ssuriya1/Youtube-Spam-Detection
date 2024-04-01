@@ -6,6 +6,31 @@ app = Flask(__name__)
 app.secret_key = "ygfdffsfi99"
 database = "data1.db"
 
+# Create tables if they don't exist
+def create_tables():
+    conn = sqlite3.connect(database)
+    cur = conn.cursor()
+    # Create user table
+    cur.execute('''CREATE TABLE IF NOT EXISTS user (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_name TEXT NOT NULL,
+                    number TEXT NOT NULL,
+                    mail TEXT NOT NULL,
+                    password TEXT NOT NULL
+                )''')
+    # Create result table
+    cur.execute('''CREATE TABLE IF NOT EXISTS result (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_name TEXT NOT NULL,
+                    comment TEXT NOT NULL,
+                    result TEXT NOT NULL
+                )''')
+    conn.commit()
+    conn.close()
+
+# Check if tables exist, if not, create them
+create_tables()
+
 # Define the error handler route
 @app.errorhandler(404)
 def page_not_found(error):
@@ -58,7 +83,7 @@ def login():
 def spam():
     if request.method == "POST":
         comment = request.form["comment"]
-        loaded_model, loaded_vect = load('ExtraTreesClassifier.pkl')
+        loaded_model, loaded_vect = load('best_model.pkl')
         new_comment = [comment]
         new_comment_transformed = loaded_vect.transform(new_comment).toarray()
         prediction = loaded_model.predict(new_comment_transformed)[0]
