@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request
+import os
+from flask import Flask, redirect, render_template, request, session, url_for
 import sqlite3
 from joblib import load
 from fetch_comments import get_video_comments
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 database = "database.db"
 
 # Create tables if they don't exist
@@ -23,7 +25,8 @@ def create_tables():
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_name TEXT NOT NULL,
                     comment TEXT NOT NULL,
-                    result TEXT NOT NULL
+                    result TEXT NOT NULL,
+                    accuracy REAL NOT NULL
                 )''')
     conn.commit()
     conn.close()
@@ -37,7 +40,8 @@ def page_not_found(error):
     return render_template('index.html'), 404
 
 @app.route("/")
-@app.route("/index")
+
+@app.route("/login")
 def index():
     con = sqlite3.connect(database)
     cur = con.cursor()
@@ -63,23 +67,24 @@ def register():
 
 name1 = []
 
-@app.route("/login", methods=["GET","POST"])
+@app.route("/spam", methods=["GET","POST"])
 def login():
     if request.method == "POST":
         name = request.form["name"]
-        name1.append(name)
         password = request.form["pass"]
         conn = sqlite3.connect(database)
         cur = conn.cursor()
         cur.execute("select * from user where user_name=? and password=?", (name, password,))
         data = cur.fetchone()
         if data:
+            # Store the username in the session
+            session['username'] = name
             return render_template("spam.html")
         else:
             return render_template('index.html', error_message='Password mismatch')
     return render_template("index.html")
 
-@app.route("/spam", methods=["GET","POST"])
+@app.route("/result", methods=["GET","POST"])
 def spam():
     if request.method == "POST":
         youtube_url = request.form["youtube_url"]
@@ -96,9 +101,17 @@ def spam():
                     prediction = loaded_model.predict(new_comment_transformed)[0]
                     accuracy = loaded_model.predict_proba(new_comment_transformed)[0][1] * 100  # Convert accuracy to percentage
                     if prediction == 1:
-                        spam_results.append(("Spam", accuracy, comment))  # Reordered the tuple
+                        # Append to spam_results
+                        spam_results.append((comment, "Spam", accuracy))  # Reordered the tuple
+                        # Insert into database
+                        conn = sqlite3.connect(database)
+                        cur = conn.cursor()
+                        cur.execute("INSERT INTO result (user_name, comment, result, accuracy) VALUES (?, ?, ?, ?)",
+                                    (session['username'], comment, "Spam", accuracy))  # Use session username
+                        conn.commit()
+                        conn.close()
                     else:
-                        spam_results.append(("Not Spam", accuracy, comment))  # Reordered the tuple
+                        spam_results.append((comment, "Not Spam", accuracy))  # Reordered the tuple
                 
                 # Process comments for spam detection or any other task
                 return render_template("final.html", comments=spam_results, total_comments=total_comments)
@@ -121,7 +134,7 @@ def admin():
             cur = conn.cursor()
             cur.execute("select * from result")
             result = cur.fetchall()
-            return render_template("result.html", result=result)
+            return render_template("admin.html", result=result)
         else:
             return render_template('index.html', error_message='Password mismatch')
     return render_template("index.html")
