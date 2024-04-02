@@ -10,50 +10,57 @@ logger = logging.getLogger(__name__)
 
 def get_video_comments(video_url):
     driver = None
-    try:
-        # Set up Chrome options for headless mode and logging
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--log-level=3')  # Suppress unnecessary logs
+    max_retries = 3
+    retry_delay = 2
+    
+    try_count = 0
+    while try_count < max_retries:
+        try:
+            # Initialize the WebDriver
+            driver = webdriver.Chrome()
+            
+            # Set up logging for WebDriver
+            logging.getLogger('selenium').setLevel(logging.INFO)
 
-        # Initialize the WebDriver
-        driver = webdriver.Chrome(options=options)
+            logger.info("Opening the YouTube video page...")
+            driver.get(video_url)
+            time.sleep(5)
+            
+            # Scroll down to load comments
+            logger.info("Scrolling down to load comments...")
+            body = driver.find_element(By.TAG_NAME, 'body')
+            last_height = driver.execute_script("return document.documentElement.scrollHeight")
+            while True:
+                body.send_keys(Keys.END)
+                time.sleep(2)
+                new_height = driver.execute_script("return document.documentElement.scrollHeight")
+                if new_height == last_height:
+                    break
+                last_height = new_height
+            
+            # Extract comments
+            logger.info("Extracting comments...")
+            comments = []
+            comment_divs = driver.find_elements(By.CSS_SELECTOR, '#content-text')
+            for comment_div in comment_divs:
+                comments.append(comment_div.text)
+            
+            # Get total comments count
+            total_comments = len(comments)        
+            return comments, total_comments
         
-        # Set up logging for WebDriver
-        logging.getLogger('selenium').setLevel(logging.INFO)
+        except Exception as e:
+            logger.error(f"Error fetching comments (attempt {try_count+1}/{max_retries}): {e}")
+            try_count += 1
+            if try_count < max_retries:
+                logger.info(f"Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+        finally:
+            # Quit the WebDriver after use
+            if driver:
+                logger.info("Quitting the WebDriver...")
+                driver.quit()
 
-        logger.info("Opening the YouTube video page...")
-        driver.get(video_url)
-        time.sleep(5)
-        
-        # Scroll down to load comments
-        logger.info("Scrolling down to load comments...")
-        body = driver.find_element(By.TAG_NAME, 'body')
-        last_height = driver.execute_script("return document.documentElement.scrollHeight")
-        while True:
-            body.send_keys(Keys.END)
-            time.sleep(2)
-            new_height = driver.execute_script("return document.documentElement.scrollHeight")
-            if new_height == last_height:
-                break
-            last_height = new_height
-        
-        # Extract comments
-        logger.info("Extracting comments...")
-        comments = []
-        comment_divs = driver.find_elements(By.CSS_SELECTOR, '#content-text')
-        for comment_div in comment_divs:
-            comments.append(comment_div.text)
-        
-        # Get total comments count
-        total_comments = len(comments)        
-        return comments, total_comments
-        
-    except Exception as e:
-        logger.error(f"Error fetching comments: {e}")
-        return [], 0
-    finally:
-        # Quit the WebDriver after use
-        if driver:
-            logger.info("Quitting the WebDriver...")
-            driver.quit()
+    # Return empty values if max retries exceeded
+    logger.error("Max retries exceeded. Unable to fetch comments.")
+    return [], 0
