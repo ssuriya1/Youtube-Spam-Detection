@@ -12,6 +12,7 @@ def get_video_comments(video_url):
     driver = None
     max_retries = 3
     retry_delay = 2
+    max_scrolls = 5
     
     try_count = 0
     while try_count < max_retries:
@@ -29,14 +30,11 @@ def get_video_comments(video_url):
             # Scroll down to load comments
             logger.info("Scrolling down to load comments...")
             body = driver.find_element(By.TAG_NAME, 'body')
-            last_height = driver.execute_script("return document.documentElement.scrollHeight")
-            while True:
+            scroll_count = 0
+            while scroll_count < max_scrolls:
                 body.send_keys(Keys.END)
                 time.sleep(2)
-                new_height = driver.execute_script("return document.documentElement.scrollHeight")
-                if new_height == last_height:
-                    break
-                last_height = new_height
+                scroll_count += 1
             
             # Extract comments
             logger.info("Extracting comments...")

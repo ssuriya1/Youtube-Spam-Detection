@@ -4,26 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>YouTube Spam Detection</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-      integrity="sha512-iTbRxdfchvZhyg your sha hash here"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
     <link rel="stylesheet" href="../static/style.css" />
   </head>
   <body>
     <div class="container">
-      <h1 class="title">
-        <i class="fa fa-comment"></i> YouTube Spam Detection
-      </h1>
+      <h1 class="title">YouTube Spam Detection</h1>
       <!-- Updated title -->
       <div class="form-container">
         <form action="/spam" method="post">
-          <label for="youtube_url"
-            ><i class="fa fa-link"></i> YouTube Video URL:</label
-          ><br />
+          <label for="youtube_url">
+            <i class="fa fa-link"></i>
+            YouTube Video URL:
+          </label>
+          <br />
           <input
             type="text"
             id="youtube_url"
@@ -42,7 +35,7 @@
 
     <script>
       // Show loader when form is submitted
-      document.querySelector("form").addEventListener("submit", function() {
+      document.querySelector("form").addEventListener("submit", () => {
         document.getElementById("loader").style.display = "block";
       });
     </script>

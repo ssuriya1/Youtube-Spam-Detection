@@ -3,7 +3,7 @@ body {
   font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f8f9fa; /* Light gray background */
+  background-color: #f8f9fa;
 }
 
 /* Container styles */
@@ -11,34 +11,48 @@ body {
   max-width: 800px;
   margin: 50px auto;
   padding: 20px;
-  background-color: #ffffff; /* White background */
+  background-color: #ffffff;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Input styles */
 input[type="text"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ced4da; /* Gray border */
+  border: 1px solid #ced4da;
   border-radius: 5px;
   margin-bottom: 10px;
 }
 
 /* Button styles */
-button, .button {
+button {
   padding: 10px 20px;
   border: none;
   color: #ffffff;
-  background-color: #007bff; /* Blue color */
+  background-color: #007bff;
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
-button:hover, .button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+button:hover {
+  background-color: #0056b3;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
 }
 
 /* Content styles */
@@ -56,24 +70,24 @@ table {
 
 th,
 td {
-  border: 1px solid #dee2e6; /* Light gray border */
+  border: 1px solid #dee2e6;
   padding: 12px;
   text-align: left;
 }
 
 th {
-  background-color: #f2f2f2; /* Light gray background for headers */
+  background-color: #f2f2f2;
 }
 
 /* Spam and not spam styles */
 .spam {
-  color: #dc3545; /* Red color */
-  font-weight: bold; /* Bold font for spam */
+  color: #dc3545;
+  font-weight: bold;
 }
 
 .not-spam {
-  color: #28a745; /* Green color */
-  font-weight: bold; /* Bold font for not spam */
+  color: #28a745;
+  font-weight: bold;
 }
 
 /* Loader styles */
@@ -84,27 +98,22 @@ th {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.5
-  ); /* Semi-transparent white background */
-  z-index: 9999; /* Ensure it's on top of other elements */
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 9999;
 }
 
 .loader {
-  border: 8px solid #f3f3f3; /* Light grey */
-  border-top: 8px solid #3498db; /* Blue */
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  animation: spin 1s linear infinite; /* Spin animation */
+  animation: spin 1s linear infinite;
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-top: -25px; /* Center vertically */
-  margin-left: -25px; /* Center horizontally */
+  margin-top: -25px;
+  margin-left: -25px;
 }
 
 @keyframes spin {
