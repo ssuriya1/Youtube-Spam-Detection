@@ -3,157 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>YouTube - Spam Detection</title>
+    <title>YouTube Spam Detection</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iTbRxdfchvZhyg your sha hash here"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="../static/style.css" />
   </head>
   <body>
     <div class="container">
-      <h1>YouTube - Spam Detection</h1>
-      <div class="form-switcher">
-        <button onclick="toggleForms('register')">Register</button>
-        <button onclick="toggleForms('login')">Login</button>
-        <button onclick="toggleForms('admin')">Admin</button>
-      </div>
-      {% if error_message %}
-      <div class="error-container">
-        <p class="error">{{ error_message }}</p>
-      </div>
-      {% endif %}
-      <div class="form-container" id="register-form">
-        <form
-          method="post"
-          action="/register"
-          onsubmit="return validateRegistrationForm()"
-        >
-          <p>Register</p>
-          <label for="name">Name:</label>
+      <h1 class="title">
+        <i class="fa fa-comment"></i> YouTube Spam Detection
+      </h1>
+      <!-- Updated title -->
+      <div class="form-container">
+        <form action="/spam" method="post">
+          <label for="youtube_url"
+            ><i class="fa fa-link"></i> YouTube Video URL:</label
+          ><br />
           <input
-            autocomplete="off"
-            autofocus
             type="text"
-            id="name"
-            name="name"
+            id="youtube_url"
+            name="youtube_url"
             required
-          />
-          <label for="number">Mobile No:</label>
-          <input
-            autocomplete="off"
-            type="number"
-            id="number"
-            name="number"
-            required
-          />
-          <label for="email">Email:</label>
-          <input
-            autocomplete="off"
-            type="email"
-            id="email"
-            name="email"
-            required
-          />
-          <label for="password">Password:</label>
-          <input
-            autocomplete="off"
-            type="password"
-            id="password"
-            name="pass"
-            required
-          />
-          <input autocomplete="off" type="submit" value="Register" />
-        </form>
-      </div>
-      <div class="form-container" id="login-form">
-        <form
-          method="post"
-          action="/spam"
-          onsubmit="return validateLoginForm()"
-        >
-          <p>Login</p>
-          <label for="username">Username:</label>
-          <input
-            autocomplete="off"
-            autofocus
-            type="text"
-            id="username"
-            name="name"
-            required
-          />
-          <label for="password">Password:</label>
-          <input
-            autocomplete="off"
-            type="password"
-            id="userpassword"
-            name="pass"
-            required
-          />
-          <input autocomplete="off" type="submit" value="Login" />
-        </form>
-      </div>
-      <div class="form-container" id="admin-form">
-        <form method="post" action="/admin">
-          <p>Admin Login</p>
-          <label for="adminname">Admin Name:</label>
-          <input
-            autofocus
-            autocomplete="off"
-            type="text"
-            id="adminname"
-            name="name"
-            required
-          />
-          <label for="adminpassword">Password:</label>
-          <input
-            autocomplete="off"
-            type="password"
-            id="adminpassword"
-            name="pass"
-            required
-          />
-          <input autocomplete="off" type="submit" value="Login" />
+          /><br />
+          <button type="submit">Check Comments</button>
         </form>
       </div>
     </div>
 
+    <!-- Loader -->
+    <div class="loader-container" id="loader">
+      <div class="loader"></div>
+    </div>
+
     <script>
-      function toggleForms(formToShow) {
-        var forms = document.querySelectorAll(".form-container");
-        for (var i = 0; i < forms.length; i++) {
-          forms[i].style.display = "none";
-        }
-        document.getElementById(formToShow + "-form").style.display = "block";
-        document
-          .getElementById(formToShow + "-form")
-          .querySelector("input")
-          .focus();
-      }
-
-      function validateRegistrationForm() {
-        var name = document.getElementById("name").value;
-        var number = document.getElementById("number").value;
-        var email = document.getElementById("email").value;
-        var password = document.getElementById("password").value;
-
-        if (name === "" || number === "" || email === "" || password === "") {
-          alert("Please fill in all fields.");
-          return false;
-        }
-        return true;
-      }
-
-      function validateLoginForm() {
-        var username = document.getElementById("username").value;
-        var password = document.getElementById("userpassword").value;
-
-        if (username === "" || password === "") {
-          alert("Please enter username and password.");
-          return false;
-        }
-        return true;
-      }
+      // Show loader when form is submitted
+      document.querySelector("form").addEventListener("submit", function() {
+        document.getElementById("loader").style.display = "block";
+      });
     </script>
   </body>
 </html>

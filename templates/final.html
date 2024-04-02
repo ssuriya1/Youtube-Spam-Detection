@@ -2,20 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Title</title>
-    <!-- Include Font Awesome -->
+    <title>Comment Analysis</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iTbRxdfchvZhyg your sha hash here"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="../static/final.css" />
+    <link rel="stylesheet" href="../static/style.css" />
   </head>
   <body>
     <div class="container">
-      <a href="/spam" class="button"><i class="fas fa-arrow-left"></i> Back</a>
+      <a href="/" class="button"><i class="fas fa-arrow-left"></i> Back</a>
       <div class="content">
         {% if comments %}
-        <table>
+        <table id="commentsTable">
           <thead>
             <tr>
               <th>S.No</th>
@@ -25,24 +27,76 @@
             </tr>
           </thead>
           <tbody>
-            {% for comment, prediction, accuracy in comments %}
-            <tr>
+            {% for comment in comments %}
+            <tr class="commentRow">
               <td>{{ loop.index }}</td>
-              <td>{{ comment }}</td>
+              <td>{{ comment[0] }}</td>
               <td
-                class="{% if prediction == 'Spam' %}spam{% else %}not-spam{% endif %}"
+                class="{% if comment[1] == 'Spam' %}spam{% else %}not-spam{% endif %}"
               >
-                {{ prediction }}
+                {{ comment[1] }}
               </td>
-              <td>{% if prediction == 'Spam' %}{{ accuracy }}{% endif %}</td>
+              <td>{% if comment[1] == 'Spam' %}{{ comment[2] }}{% endif %}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+        <div class="pagination">
+          <button id="prevPage">Previous</button>
+          <button id="nextPage">Next</button>
+        </div>
         {% else %}
         <p>No comments available.</p>
         {% endif %}
       </div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".commentRow");
+        const pageSize = 20;
+        let currentPage = 1;
+
+        function showPage(pageNumber) {
+          const startIndex = (pageNumber - 1) * pageSize;
+          const endIndex = pageNumber * pageSize;
+
+          rows.forEach((row, index) => {
+            if (index >= startIndex && index < endIndex) {
+              row.style.display = "table-row";
+            } else {
+              row.style.display = "none";
+            }
+          });
+        }
+
+        function updatePaginationButtons() {
+          const prevPageButton = document.getElementById("prevPage");
+          const nextPageButton = document.getElementById("nextPage");
+
+          prevPageButton.disabled = currentPage === 1;
+          nextPageButton.disabled = currentPage * pageSize >= rows.length;
+        }
+
+        document
+          .getElementById("prevPage")
+          .addEventListener("click", function () {
+            currentPage--;
+            showPage(currentPage);
+            updatePaginationButtons();
+          });
+
+        document
+          .getElementById("nextPage")
+          .addEventListener("click", function () {
+            currentPage++;
+            showPage(currentPage);
+            updatePaginationButtons();
+          });
+
+        showPage(currentPage);
+        updatePaginationButtons();
+      });
+    </script>
   </body>
 </html>
