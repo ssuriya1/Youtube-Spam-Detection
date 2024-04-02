@@ -43,6 +43,9 @@ def page_not_found(error):
 
 @app.route("/login")
 def index():
+    if 'username' in session:
+        return redirect(url_for('spam'))
+    
     con = sqlite3.connect(database)
     cur = con.cursor()
     cur.execute("select * from result")
@@ -77,16 +80,27 @@ def login():
         cur.execute("select * from user where user_name=? and password=?", (name, password,))
         data = cur.fetchone()
         if data:
-            # Store the username in the session
             session['username'] = name
             return render_template("spam.html")
         else:
             return render_template('index.html', error_message='Password mismatch')
     return render_template("index.html")
 
+from flask import redirect, url_for
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+
 @app.route("/result", methods=["GET","POST"])
 def spam():
     if request.method == "POST":
+        # Check if the user is logged in
+        if 'username' not in session:
+            return redirect(url_for('login'))
+        
         youtube_url = request.form["youtube_url"]
         if youtube_url:
             comments, total_comments = get_video_comments(youtube_url)
@@ -99,19 +113,19 @@ def spam():
                     new_comment = [comment]
                     new_comment_transformed = loaded_vect.transform(new_comment).toarray()
                     prediction = loaded_model.predict(new_comment_transformed)[0]
-                    accuracy = loaded_model.predict_proba(new_comment_transformed)[0][1] * 100  # Convert accuracy to percentage
+                    accuracy = loaded_model.predict_proba(new_comment_transformed)[0][1] * 100
                     if prediction == 1:
                         # Append to spam_results
-                        spam_results.append((comment, "Spam", accuracy))  # Reordered the tuple
+                        spam_results.append((comment, "Spam", accuracy))
                         # Insert into database
                         conn = sqlite3.connect(database)
                         cur = conn.cursor()
                         cur.execute("INSERT INTO result (user_name, comment, result, accuracy) VALUES (?, ?, ?, ?)",
-                                    (session['username'], comment, "Spam", accuracy))  # Use session username
+                                    (session['username'], comment, "Spam", accuracy))
                         conn.commit()
                         conn.close()
                     else:
-                        spam_results.append((comment, "Not Spam", accuracy))  # Reordered the tuple
+                        spam_results.append((comment, "Not Spam", accuracy))
                 
                 # Process comments for spam detection or any other task
                 return render_template("final.html", comments=spam_results, total_comments=total_comments)

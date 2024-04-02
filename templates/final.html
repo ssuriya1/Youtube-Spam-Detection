@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <title>Title</title>
     <!-- Include Font Awesome -->
     <link
@@ -25,7 +25,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for prediction, accuracy, comment in comments %}
+            {% for comment, prediction, accuracy in comments %}
             <tr>
               <td>{{ loop.index }}</td>
               <td>{{ comment }}</td>
@@ -34,7 +34,7 @@
               >
                 {{ prediction }}
               </td>
-              <td>{% if prediction == 'Spam' %}{{ accuracy }}%{% endif %}</td>
+              <td>{% if prediction == 'Spam' %}{{ accuracy }}{% endif %}</td>
             </tr>
             {% endfor %}
           </tbody>
