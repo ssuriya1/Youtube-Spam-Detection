@@ -7,7 +7,10 @@
   </head>
   <body>
     <div class="container">
-      <a href="/" class="button"> Back </a>
+      <a href="/" class="button">Back</a>
+      {% if pdf_generated %}
+      <a href="/download_pdf" class="button">Download PDF</a>
+      {% endif %}
       <div class="content">
         {% if comments %}
         <table id="commentsTable">
