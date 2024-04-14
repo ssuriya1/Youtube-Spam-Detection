@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>title</title>
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-image: url('static/index.jpg');
+        }
+
+        button {
+            padding: 10px 10px;
+            border: 1px solid;
+            color: aliceblue;
+            background-color: black;
+            border-radius: 10px;
+            margin-right: 95%;
+        }
+
+        button:hover {
+            background-color: rgb(214, 183, 29);
+        }
+
+        .form {
+            padding: 10px 100px;
+            border: 1px solid;
+            height: 100px;
+            width: 300px;
+            background-color: aliceblue;
+            color: black;
+            margin-top: 10%;
+            margin-left: 50%;
+            border-radius: 75px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        /* Add style for Font Awesome icons */
+        .fa {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <a href="/index1"><button><i class="fa fa-arrow-left"></i> Back</button></a>
+  
+        <div class="form">
+            <h1><i class="fa fa-info-circle"></i> {{result}}</h1>
+        </div>
+    </center>
+</body>
+</html>

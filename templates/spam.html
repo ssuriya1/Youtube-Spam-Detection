@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>title</title>
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-image: url('static/index.jpg');
+        }
+
+        .form-container {
+            padding: 10px;
+            border: 1px transparent;
+            width: 300px;
+            height: 300px;
+            margin-top: 1%;
+            margin-left: 60%;
+        }
+
+        button, input[type="submit"] {
+            padding: 10px 10px;
+            border: 1px solid;
+            color: aliceblue;
+            background-color: black;
+            border-radius: 10px;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: rgb(214, 183, 29);
+        }
+
+        label {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-style: italic;
+        }
+
+        input {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-style: italic;
+            background-color: transparent;
+        }
+
+        h1 {
+            margin-top: 10%;
+            margin-left: 50%;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        /* Add style for Font Awesome icons */
+        .fa {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <h1><i class="fa fa-comment"></i> ENTER YOUR COMMENT</h1>
+
+        <div class="form-container">
+            <form action="/spam" method="post">
+                <label><i class="fa fa-pencil-alt"></i> Comment:</label><br>
+                <input type="text" name="comment"><br><br>
+                <input type="submit" value="ENTER">
+            </form>
+        </div>
+    </center>
+</body>
+</html>

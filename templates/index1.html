@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        body {
+            background-image: url('static/index.jpg');
+        }
+
+        .registration-form, .login-form, .admin-form {
+            display: none;
+        }
+
+        .admin-form {
+            position: relative;
+        }
+
+        #notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: red;
+            color: white;
+            padding: 1px 2px;
+            border-radius: 50%;
+            margin-top: 1px;
+            margin-right: 41%;
+            border: 2px solid white;
+        }
+
+        .form-container {
+            padding: 10px;
+            border: 1px transparent;    
+            width: 500px;
+            height: 300px;
+            margin-top: 1%;
+            margin-left: 45%;   
+        }
+
+        h1 {
+            display: block; /* Show the heading by default */
+            margin-top: 10%;
+            margin-left: 45%;   
+            font-weight: bolder;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 40px;
+            color:rgb(7, 4, 4)
+
+        }
+        p{
+            font-weight: bolder;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 20px;   
+        }
+        button,input[type="submit"]{
+            padding: 10px 10px;
+            border:1px solid;
+            color: aliceblue;
+            background-color: black;
+            border-radius: 10px;
+        }
+        button:hover,input[type="submit"]:hover{
+            background-color: rgb(214, 183, 29);
+
+        }
+        label{  
+
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-style:italic;  
+        }
+        input{
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-style:italic;  
+            background-color:transparent;
+        }
+      
+    </style>        
+</head>
+<body>
+    <body><center>
+        
+        <button id="register-btn" onclick="toggleForms('register')">
+            <i class="icon fas fa-user"></i> Register
+        </button>
+        <button id="login-btn" onclick="toggleForms('login')">
+            <i class="icon fas fa-sign-in-alt"></i> Login
+        </button>
+        <button id="admin-btn" onclick="toggleForms('admin')">
+            <i class="icon fas fa-user-shield"></i> Admin<span id="notification-badge"></span>
+        </button>
+
+        <h1><i class="icon fas fa-video"></i> Welcome to YouTube Spam Prediction</h1>
+        <div class="form-container">
+            <form method="post" action="/register" id="register-form" class="registration-form">
+                <p><i class="icon fas fa-user"></i> REGISTER</p>
+                <label><i class="icon fas fa-user"></i> Name:</label>
+                <input type="text" name="name"><br><br>
+                <label><i class="icon fas fa-mobile-alt"></i> Mobile No:</label>
+                <input type="number" name="number"><br><br>
+                <label><i class="icon fas fa-envelope"></i> Email:</label>
+                <input type="email" name="email"><br><br>
+                <label><i class="icon fas fa-lock"></i> Password:</label>
+                <input type="password" name="pass"><br><br>
+                <input type="submit" value="Register">
+            </form>
+    
+            <form method="post" action="/login" id="login-form" class="login-form">
+                <p><i class="icon fas fa-sign-in-alt"></i> LOGIN</p>
+                <label><i class="icon fas fa-user"></i> User Name:</label>
+                <input type="text" name="name"><br><br>
+                <label><i class="icon fas fa-lock"></i> Password:</label>
+                <input type="password" name="pass"><br><br>
+                <input type="submit" value="Login">
+            </form>
+    
+            <form method="post" action="/admin" id="admin-form" class="admin-form">
+                <p><i class="icon fas fa-user-shield"></i> ADMIN</p>
+                <label><i class="icon fas fa-user"></i> Admin:</label>
+                <input type="text" name="name"><br><br>
+                <label><i class="icon fas fa-lock"></i> Password:</label>
+                <input type="password" name="pass"><br><br>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    
+</center>
+</body>
+
+    <script>
+        function toggleForms(formToShow) {
+            document.getElementById('register-form').style.display = formToShow === 'register' ? 'block' : 'none';
+            document.getElementById('login-form').style.display = formToShow === 'login' ? 'block' : 'none';
+            document.getElementById('admin-form').style.display = formToShow === 'admin' ? 'block' : 'none';
+        }
+ 
+
+
+    function showDefaultMessage() {
+        // Show the welcome message by default
+        document.getElementById('welcome-message').style.display = 'block';
+    }
+
+    // Directly call the showNotification function with the desired data
+    showNotification('{{ data }}');
+
+    function showNotification(data) {
+        // Assuming data is a number for the notification count
+        var notificationBadge = document.getElementById('notification-badge');
+        notificationBadge.textContent = data;
+    }
+</script>
+</html>
