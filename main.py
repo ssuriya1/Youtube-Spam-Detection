@@ -2,9 +2,8 @@ import os
 import re
 from flask import Flask, render_template, request, send_file
 from joblib import load
+from pdf_generator import generate_pdf
 from fetch_comments import get_video_comments
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -29,7 +28,7 @@ def spam():
         youtube_url = request.form["youtube_url"]
         if youtube_url:
             if is_youtube_url(youtube_url):  # Check if the URL is from YouTube
-                comments, total_comments = get_video_comments(youtube_url)
+                comments, total_comments, video_title = get_video_comments(youtube_url)
                 if comments:
                     # Load spam detection model
                     loaded_model, loaded_vect = load('best_model.pkl')
@@ -48,7 +47,7 @@ def spam():
                     # Process comments for spam detection or any other task
 
                     # Generate PDF report
-                    generate_pdf(spam_results, total_comments)
+                    generate_pdf(spam_results, total_comments, video_title)
 
                     # Provide download link for the PDF
                     return render_template("final.html", comments=spam_results, total_comments=total_comments, pdf_generated=True)
@@ -65,27 +64,6 @@ def spam():
 def download_pdf():
     # Provide download link for the PDF
     return send_file("output.pdf", as_attachment=True)
-
-def generate_pdf(comments, total_comments):
-    # Create a PDF document
-    doc = SimpleDocTemplate("output.pdf", pagesize=letter)
-
-    # Define content for the PDF
-    content = []
-
-    # Add paragraphs to the content
-    content.append(Paragraph("YouTube Spam Detection Report", style=None))
-    content.append(Paragraph(f"Total Comments Analyzed: {total_comments}", style=None))
-    content.append(Paragraph("\n", style=None))
-    content.append(Paragraph("Comments Analysis:", style=None))
-    for i, (comment, prediction, accuracy) in enumerate(comments):
-        content.append(Paragraph(f"Comment {i+1}: {comment}", style=None))
-        content.append(Paragraph(f"Prediction: {prediction}", style=None))
-        content.append(Paragraph(f"Accuracy: {accuracy:.2f}%", style=None))
-        content.append(Paragraph("\n", style=None))
-
-    # Build the PDF document
-    doc.build(content)
 
 if __name__ == "__main__":
     app.run(debug=True, port=560)

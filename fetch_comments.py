@@ -27,6 +27,11 @@ def get_video_comments(video_url):
             driver.get(video_url)
             time.sleep(5)
             
+            # Extract video title
+            logger.info("Extracting video title...")
+            video_title_elem = driver.find_element(By.CSS_SELECTOR, "h1.style-scope.ytd-watch-metadata yt-formatted-string")
+            video_title = video_title_elem.text
+            
             # Scroll down to load comments
             logger.info("Scrolling down to load comments...")
             body = driver.find_element(By.TAG_NAME, 'body')
@@ -45,7 +50,7 @@ def get_video_comments(video_url):
             
             # Get total comments count
             total_comments = len(comments)        
-            return comments, total_comments
+            return comments, total_comments, video_title
         
         except Exception as e:
             logger.error(f"Error fetching comments (attempt {try_count+1}/{max_retries}): {e}")
@@ -61,4 +66,4 @@ def get_video_comments(video_url):
 
     # Return empty values if max retries exceeded
     logger.error("Max retries exceeded. Unable to fetch comments.")
-    return [], 0
+    return [], 0, ""
