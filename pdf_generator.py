@@ -1,56 +1,58 @@
-from fpdf import FPDF
-from datetime import datetime
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.lib.utils import simpleSplit
+from datetime import datetime 
 
 def generate_pdf(comments, total_comments, youtube_title):
-    # Create instance of FPDF class
-    pdf = FPDF()
+   
+    pdf = SimpleDocTemplate("output.pdf", pagesize=letter)
+    elements = []
 
-    # Add a page
-    pdf.add_page()
+    styles = getSampleStyleSheet()
+    title_style = styles["Title"]
+    normal_style = styles["Normal"]
+    heading3_style = styles["Heading3"]
 
-    # Set font for the PDF
-    pdf.set_font("Arial", size=12)
-
-    # Add creation timestamp
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    pdf.cell(200, 10, txt=f"Report generated on: {timestamp}", ln=True, align='C')
-
-    # Add YouTube title
-    pdf.cell(200, 10, txt=f"YouTube Title: {youtube_title}", ln=True, align='C')
-
-    # Add total comments
-    pdf.cell(200, 10, txt=f"Total Comments Analyzed: {total_comments}", ln=True, align='C')
-
-    # Add a line break
-    pdf.ln(10)
-
-    # Add table for comments analysis
-    col_widths = [90, 50, 50]
+    timestamp_style = ParagraphStyle(name='TimestampStyle', fontSize=10, alignment=2) 
+    
+    elements.append(Paragraph(f"Report generated on: {timestamp}", timestamp_style))
+    elements.append(Paragraph("", normal_style)) 
+    elements.append(Paragraph(f"YouTube Title: {youtube_title}", title_style))
+    elements.append(Paragraph("", normal_style)) 
+    elements.append(Paragraph(f"Total Comments Analyzed: {total_comments}", heading3_style))
+    elements.append(Paragraph("", normal_style)) 
+   
     header = ["Comment", "Prediction", "Accuracy"]
-    
-    # Add table headers
-    for col, col_width in zip(header, col_widths):
-        pdf.cell(col_width, 10, txt=col, ln=False, align='C')
-    
-    pdf.ln()
+    data = [header] 
 
-    # Add table content
     for comment, prediction, accuracy in comments:
-        # Encode comment to UTF-8
-        comment = comment.encode('latin-1', 'replace').decode('latin-1')
-        lines = pdf.multi_cell(col_widths[0], 10, txt=comment)
-        cell_height = pdf.font_size * len(lines) + 2  # Add 2 for padding
-        pdf.cell(col_widths[0], cell_height, txt='', ln=False)  # Empty cell for comment
-        pdf.cell(col_widths[1], cell_height, txt=prediction, ln=False, align='C')  # Prediction
-        pdf.cell(col_widths[2], cell_height, txt=f"{accuracy:.2f}%", ln=True, align='C')  # Accuracy
+        wrapped_comment = "\n".join(simpleSplit(comment, normal_style.fontName, normal_style.fontSize, 300))
+        data.append([Paragraph(wrapped_comment, normal_style), prediction, f"{accuracy:.2f}%"])
+   
+    table = Table(data, repeatRows=1)   
 
-    # Output the PDF using UTF-8 encoding
-    pdf.output("output.pdf", 'F')
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), (0.7, 0.7, 0.7)), 
+        ('TEXTCOLOR', (0, 0), (-1, 0), (1, 1, 1)), 
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'), 
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'), 
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12), 
+        ('BACKGROUND', (0, 1), (-1, -1), (0.9, 0.9, 0.9)), 
+        ('GRID', (0, 0), (-1, -1), 1, (0, 0, 0)), 
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
+        ('LINEBELOW', (0, 0), (-1, -1), 1, colors.black), 
+        ('TOPPADDING', (0, 0), (-1, -1), 6), 
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6), 
+        ('LEFTPADDING', (0, 0), (-1, -1), 6), 
+        ('RIGHTPADDING', (0, 0), (-1, -1), 6), 
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'), 
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black), 
+    ])
 
-# Example usage
-comments = [("This is a comment.", "Not Spam", 75.5),
-            ("Another comment.", "Spam", 90.2),
-            ("Yet another comment.", "Not Spam", 82.1)]
-total_comments = len(comments)
-youtube_title = "Example YouTube Title"
-generate_pdf(comments, total_comments, youtube_title)
+    table.setStyle(style)
+    elements.append(table)   
+    pdf.build(elements)
