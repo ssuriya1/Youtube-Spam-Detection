@@ -2,7 +2,6 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
 from reportlab.lib.utils import simpleSplit
 from datetime import datetime 
 
@@ -20,11 +19,8 @@ def generate_pdf(comments, total_comments, youtube_title):
     timestamp_style = ParagraphStyle(name='TimestampStyle', fontSize=10, alignment=2) 
     
     elements.append(Paragraph(f"Report generated on: {timestamp}", timestamp_style))
-    elements.append(Paragraph("", normal_style)) 
-    elements.append(Paragraph(f"YouTube Title: {youtube_title}", title_style))
-    elements.append(Paragraph("", normal_style)) 
+    elements.append(Paragraph(f"{youtube_title}", title_style))
     elements.append(Paragraph(f"Total Comments Analyzed: {total_comments}", heading3_style))
-    elements.append(Paragraph("", normal_style)) 
    
     header = ["Comment", "Prediction", "Accuracy"]
     data = [header] 
