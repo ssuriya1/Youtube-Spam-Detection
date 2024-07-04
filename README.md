@@ -34,6 +34,13 @@ This script will likely create a CSV file containing the dataset. Double-check t
   2. Important: Before training, verify the generated dataset's CSV file path in the training.ipynb file. Replace any placeholders with the actual location.
   3. Run the Jupyter Notebook cells one by one (typically using Shift+Enter) to execute the training and testing code. This usually involves splitting data (80% training, 20% testing), training the model, and evaluating its performance.
 
+### Recomended Extensions for VSCode
+  1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) - Pack Includes (Jupyter keymaps, Jupyter Notebook renderer, Jupyter slideshow, Jupyter cell tags).
+  2. [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) - Helps for writing code in vscode.
+  3. [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) - supports for python language and helps pylance to IntelliSense, linting, codenavigation.
+  4. [Python Debugger](https://marketplace.visualstudio.com/items?itemName=ms-python.debugpy) - used for debugging python application.
+  5. [Python Indent](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent) - used for formatting python code.
+
 #### Running the Application:
   1. Once training is complete, return to your terminal window.
   2. Execute the command:
