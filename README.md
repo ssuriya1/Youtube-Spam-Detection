@@ -5,13 +5,13 @@
  * This research proposes a novel approach to combating YouTube spam – leveraging the power of ensemble learning. We delve into existing studies on YouTube spam detection and conduct a series of classification experiments. Six individual machine learning algorithms are put to the test: Decision Trees, Bernoulli Naive Bayes, Random Forest, Support Vector Machines (linear). Additionally, we explore the potential of two ensemble models: Ensemble with Hard Voting and Ensemble with Soft Voting. These models combine the strengths of individual algorithms, aiming to achieve a superior level of spam detection accuracy.
  * To comprehensively evaluate these techniques, we train them on a dataset of comments from popular music videos by renowned artists like Psy, Katy Perry, LMFAO, Eminem, and Shakira. By harnessing the capabilities of machine learning and ensemble approaches, this research aims to develop a robust system for filtering YouTube spam comments, fostering a more positive and engaging online platform for users.
 
-## Introduction
+### Introduction
 
 YouTube's immense popularity has unfortunately become a breeding ground for disruptive spam comments. These messages not only degrade user experience but also hinder meaningful conversations. While YouTube's built-in filtering system offers some protection, it frequently falls short of eliminating the issue entirely.
 
 This project tackles the challenge of YouTube spam comment detection by leveraging the power of ensemble learning, a machine learning technique that combines the strengths of multiple algorithms to achieve enhanced performance.
 
-## Methodology
+### Methodology
 
 1. **Literature Review:** We conducted a thorough review of existing research on YouTube spam comment detection to understand current approaches, identify strengths and limitations, and establish a foundation for our own investigation.
 
@@ -31,11 +31,11 @@ This project tackles the challenge of YouTube spam comment detection by leveragi
 
 5. **Evaluation:** All models underwent rigorous training and evaluation to assess their accuracy, precision, recall, and F1-score metrics in detecting YouTube spam comments.
 
-## Conclusion
+### Conclusion
 
 Summarize the project's overall contribution to the field of YouTube spam comment detection. Did ensemble learning deliver the anticipated improvements? Emphasize the potential for this approach to be integrated into real-world YouTube spam filtering systems.
 
-### Running the Application
+# Running the Application
 
 **Prerequisites:**
  * Python (version 3.10.8 recommended)
